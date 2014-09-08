@@ -1,0 +1,6 @@
+name = Gentle Teams Services
+description = A custom module for the GentleTeams Drupal module, to expose REST services.
+package = Gentle Ultimate
+core = 7.x
+version = 7.x-0.1
+dependencies[] = gentle_teams
