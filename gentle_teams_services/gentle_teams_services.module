@@ -1,0 +1,59 @@
+<?php
+
+/**
+* @file
+* A custom module for the GentleTeams Drupal module, to expose REST services.
+*/
+
+/**
+* Implements hook_help.
+*
+* Displays help and module information.
+*
+* @param path
+*   Which path of the site we're using to display help
+* @param arg
+*   Array that holds the current path as returned from arg() function
+*/
+function gentle_teams_services_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#gentle_teams_services":
+      return '<p>' . t("A custom module for the GentleTeams Drupal module, to expose REST services.") . '</p>';
+      break;
+  }
+}
+
+
+
+/** 
+ * Resources for Services module
+ */
+function gentle_teams_services_services_resources() {
+    return array(
+        'team' => array(
+            'index' => array(
+                'help' => t('Retrieves a list of teams.'),
+                /*'access callback' => 'user_access',
+                'access arguments' => array('access content'),*/
+                'callback' => 'gentle_teams_services_team_index',
+            ),
+        ),
+    );
+}
+
+/**
+ * Index of teams
+ */
+function gentle_teams_services_team_index() {
+    $teams = array();
+    $rs = db_query('SELECT t.id, t.sid, t.name, count(tu.uid) as count
+                    FROM {gentle_teams_team} t
+                        LEFT OUTER JOIN {gentle_teams_team_users tu on tu.tid = t.id
+                    GROUP BY t.id, t.sid, t.name');
+
+    foreach($rs as $row) {
+        $teams[] = $row;
+    }
+
+    return $teams;
+}
